@@ -1,0 +1,32 @@
+# agp configuration file
+# See: https://github.com/sonatype/agentic-patches#configuration
+
+version: "1"
+pr:
+    title_template: 'chore(deps): {{.GroupName}}'
+    body_template: |-
+        ## Summary
+
+        {{.Summary}}
+
+        ## Packages Updated
+
+        {{.PackageCount}} package(s) updated
+    labels:
+        - dependencies
+    reviewers: []
+    draft: false
+    branch_template: agp/{{.GroupID}}
+validation:
+    enabled: true
+    commands:
+        - npm test
+    timeout: 5m
+agent:
+    enabled: true
+    provider: anthropic
+    max_iterations: 5
+    api_key_env: ANTHROPIC_API_KEY
+    base_url: https://llm-dev.sonatype.com
+    model: claude-opus-4-5
+    timeout: 10m
