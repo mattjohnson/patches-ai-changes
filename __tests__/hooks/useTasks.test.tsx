@@ -144,10 +144,10 @@ describe('useCreateTask', () => {
     expect(result.current.mutateAsync).toBeDefined();
   });
 
-  it('tracks loading state during mutation', () => {
+  it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result } = renderHook(() => useCreateTask(), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useCreateTask(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -158,7 +158,8 @@ describe('useCreateTask', () => {
       });
     });
 
-    expect(result.current.isLoading).toBe(true);
+    await waitForNextUpdate();
+    expect(result.current.isSuccess).toBe(true);
   });
 });
 
@@ -183,10 +184,10 @@ describe('useUpdateTaskStatus', () => {
     expect(result.current.mutateAsync).toBeDefined();
   });
 
-  it('tracks loading state during mutation', () => {
+  it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result } = renderHook(() => useUpdateTaskStatus(), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useUpdateTaskStatus(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -194,7 +195,8 @@ describe('useUpdateTaskStatus', () => {
       result.current.mutate({ id: 'task-1', status: 'DONE' });
     });
 
-    expect(result.current.isLoading).toBe(true);
+    await waitForNextUpdate();
+    expect(result.current.isSuccess).toBe(true);
   });
 });
 

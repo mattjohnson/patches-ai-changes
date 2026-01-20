@@ -152,7 +152,8 @@ describe('TaskForm', () => {
           title: 'New Test Task',
           description: 'Task description here',
           projectId: 'project-1',
-        })
+        }),
+        expect.anything()
       );
     });
   });

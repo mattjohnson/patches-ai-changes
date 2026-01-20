@@ -86,7 +86,7 @@ export const registerSchema = yup.object().shape({
   confirmPassword: yup
     .string()
     .required('Please confirm your password')
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+    .oneOf([yup.ref('password')], 'Passwords must match'),
 });
 
 export type ProjectFormData = yup.InferType<typeof projectSchema>;

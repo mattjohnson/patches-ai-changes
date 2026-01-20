@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import '@/styles/globals.css';
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: any }>) {
   const [queryClient] = useState(
     () =>
       new QueryClient({

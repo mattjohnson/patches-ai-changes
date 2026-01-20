@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act, waitFor } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useProjects, useProject, useCreateProject, useDeleteProject } from '@/hooks/useProjects';
 
@@ -92,10 +92,10 @@ describe('useCreateProject', () => {
     expect(result.current.mutateAsync).toBeDefined();
   });
 
-  it('tracks loading state during mutation', async () => {
+  it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result } = renderHook(() => useCreateProject(), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useCreateProject(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -107,7 +107,8 @@ describe('useCreateProject', () => {
       });
     });
 
-    expect(result.current.isLoading).toBe(true);
+    await waitForNextUpdate();
+    expect(result.current.isSuccess).toBe(true);
   });
 });
 

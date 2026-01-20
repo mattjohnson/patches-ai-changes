@@ -11,9 +11,18 @@ import TaskList from '@/components/TaskList';
 import TaskForm from '@/components/TaskForm';
 import Modal from '@/components/Modal';
 import AnimatedButton from '@/components/AnimatedButton';
-import { TaskFormData } from '@/lib/validation';
 import { formatDate } from '@/lib/dates';
-import { Task, TaskStatus } from '@/types';
+import { Task, TaskStatus, Priority } from '@/types';
+
+// Interface matching what TaskForm component actually outputs
+interface TaskFormData {
+  title: string;
+  description?: string;
+  status: TaskStatus;
+  priority: Priority;
+  projectId: string;
+  dueDate?: Date | null;
+}
 
 const Container = styled.div`
   display: flex;

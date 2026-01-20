@@ -82,7 +82,7 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Task, Error, { id: string; data: UpdateTaskInput }>(
+  return useMutation<Task, Error, { id: string; data: UpdateTaskInput }, { previousTask: Task | undefined }>(
     ({ id, data }) => tasksApi.update(id, data),
     {
       onMutate: async ({ id, data }) => {
@@ -119,7 +119,7 @@ export const useUpdateTask = () => {
 export const useUpdateTaskStatus = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Task, Error, { id: string; status: TaskStatus }>(
+  return useMutation<Task, Error, { id: string; status: TaskStatus }, { previousTask: Task | undefined }>(
     ({ id, status }) => tasksApi.updateStatus(id, status),
     {
       onMutate: async ({ id, status }) => {

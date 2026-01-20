@@ -67,13 +67,13 @@ const mockTasks = [
 ];
 
 export const handlers = [
-  rest.get('/api/projects', (req, res, ctx) => {
+  rest.get('*/api/projects', (req, res, ctx) => {
     const archived = req.url.searchParams.get('archived') === 'true';
     const filteredProjects = mockProjects.filter((p) => p.archived === archived);
     return res(ctx.json(filteredProjects));
   }),
 
-  rest.get('/api/projects/:id', (req, res, ctx) => {
+  rest.get('*/api/projects/:id', (req, res, ctx) => {
     const { id } = req.params;
     const project = mockProjects.find((p) => p.id === id);
     if (!project) {
@@ -82,7 +82,7 @@ export const handlers = [
     return res(ctx.json(project));
   }),
 
-  rest.post('/api/projects', async (req, res, ctx) => {
+  rest.post('*/api/projects', async (req, res, ctx) => {
     const body = await req.json();
     const newProject = {
       id: `project-${Date.now()}`,
@@ -97,7 +97,7 @@ export const handlers = [
     return res(ctx.status(201), ctx.json(newProject));
   }),
 
-  rest.get('/api/tasks', (req, res, ctx) => {
+  rest.get('*/api/tasks', (req, res, ctx) => {
     const page = parseInt(req.url.searchParams.get('page') || '1', 10);
     const pageSize = parseInt(req.url.searchParams.get('pageSize') || '20', 10);
     const status = req.url.searchParams.get('status');
@@ -131,7 +131,7 @@ export const handlers = [
     );
   }),
 
-  rest.get('/api/tasks/:id', (req, res, ctx) => {
+  rest.get('*/api/tasks/:id', (req, res, ctx) => {
     const { id } = req.params;
     const task = mockTasks.find((t) => t.id === id);
     if (!task) {
@@ -140,7 +140,7 @@ export const handlers = [
     return res(ctx.json(task));
   }),
 
-  rest.post('/api/tasks', async (req, res, ctx) => {
+  rest.post('*/api/tasks', async (req, res, ctx) => {
     const body = await req.json();
     const newTask = {
       id: `task-${Date.now()}`,
@@ -154,7 +154,7 @@ export const handlers = [
     return res(ctx.status(201), ctx.json(newTask));
   }),
 
-  rest.patch('/api/tasks/:id/status', async (req, res, ctx) => {
+  rest.patch('*/api/tasks/:id/status', async (req, res, ctx) => {
     const { id } = req.params;
     const body = await req.json();
     const task = mockTasks.find((t) => t.id === id);
