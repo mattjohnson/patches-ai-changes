@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 
 const mockProjects = [
   {
@@ -67,23 +67,24 @@ const mockTasks = [
 ];
 
 export const handlers = [
-  rest.get('*/api/projects', (req, res, ctx) => {
-    const archived = req.url.searchParams.get('archived') === 'true';
+  http.get('*/api/projects', ({ request }) => {
+    const url = new URL(request.url);
+    const archived = url.searchParams.get('archived') === 'true';
     const filteredProjects = mockProjects.filter((p) => p.archived === archived);
-    return res(ctx.json(filteredProjects));
+    return HttpResponse.json(filteredProjects);
   }),
 
-  rest.get('*/api/projects/:id', (req, res, ctx) => {
-    const { id } = req.params;
+  http.get('*/api/projects/:id', ({ params }) => {
+    const { id } = params;
     const project = mockProjects.find((p) => p.id === id);
     if (!project) {
-      return res(ctx.status(404), ctx.json({ error: 'Project not found' }));
+      return HttpResponse.json({ error: 'Project not found' }, { status: 404 });
     }
-    return res(ctx.json(project));
+    return HttpResponse.json(project);
   }),
 
-  rest.post('*/api/projects', async (req, res, ctx) => {
-    const body = await req.json();
+  http.post('*/api/projects', async ({ request }) => {
+    const body = await request.json();
     const newProject = {
       id: `project-${Date.now()}`,
       ...body,
@@ -94,15 +95,16 @@ export const handlers = [
       taskCount: 0,
       completedTaskCount: 0,
     };
-    return res(ctx.status(201), ctx.json(newProject));
+    return HttpResponse.json(newProject, { status: 201 });
   }),
 
-  rest.get('*/api/tasks', (req, res, ctx) => {
-    const page = parseInt(req.url.searchParams.get('page') || '1', 10);
-    const pageSize = parseInt(req.url.searchParams.get('pageSize') || '20', 10);
-    const status = req.url.searchParams.get('status');
-    const priority = req.url.searchParams.get('priority');
-    const projectId = req.url.searchParams.get('projectId');
+  http.get('*/api/tasks', ({ request }) => {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '20', 10);
+    const status = url.searchParams.get('status');
+    const priority = url.searchParams.get('priority');
+    const projectId = url.searchParams.get('projectId');
 
     let filteredTasks = [...mockTasks];
 
@@ -120,28 +122,26 @@ export const handlers = [
     const start = (page - 1) * pageSize;
     const paginatedTasks = filteredTasks.slice(start, start + pageSize);
 
-    return res(
-      ctx.json({
-        data: paginatedTasks,
-        total,
-        page,
-        pageSize,
-        totalPages: Math.ceil(total / pageSize),
-      })
-    );
+    return HttpResponse.json({
+      data: paginatedTasks,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    });
   }),
 
-  rest.get('*/api/tasks/:id', (req, res, ctx) => {
-    const { id } = req.params;
+  http.get('*/api/tasks/:id', ({ params }) => {
+    const { id } = params;
     const task = mockTasks.find((t) => t.id === id);
     if (!task) {
-      return res(ctx.status(404), ctx.json({ error: 'Task not found' }));
+      return HttpResponse.json({ error: 'Task not found' }, { status: 404 });
     }
-    return res(ctx.json(task));
+    return HttpResponse.json(task);
   }),
 
-  rest.post('*/api/tasks', async (req, res, ctx) => {
-    const body = await req.json();
+  http.post('*/api/tasks', async ({ request }) => {
+    const body = await request.json();
     const newTask = {
       id: `task-${Date.now()}`,
       ...body,
@@ -151,15 +151,15 @@ export const handlers = [
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    return res(ctx.status(201), ctx.json(newTask));
+    return HttpResponse.json(newTask, { status: 201 });
   }),
 
-  rest.patch('*/api/tasks/:id/status', async (req, res, ctx) => {
-    const { id } = req.params;
-    const body = await req.json();
+  http.patch('*/api/tasks/:id/status', async ({ params, request }) => {
+    const { id } = params;
+    const body = await request.json();
     const task = mockTasks.find((t) => t.id === id);
     if (!task) {
-      return res(ctx.status(404), ctx.json({ error: 'Task not found' }));
+      return HttpResponse.json({ error: 'Task not found' }, { status: 404 });
     }
     const updatedTask = {
       ...task,
@@ -167,6 +167,6 @@ export const handlers = [
       completedAt: body.status === 'DONE' ? new Date().toISOString() : null,
       updatedAt: new Date().toISOString(),
     };
-    return res(ctx.json(updatedTask));
+    return HttpResponse.json(updatedTask);
   }),
 ];
