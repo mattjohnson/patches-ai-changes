@@ -223,8 +223,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Label htmlFor="title">Task Title *</Label>
         <Input
           id="title"
-          name="title"
-          ref={register({ required: 'Task title is required', minLength: { value: 2, message: 'Title must be at least 2 characters' } })}
+          {...register('title', { required: 'Task title is required', minLength: { value: 2, message: 'Title must be at least 2 characters' } })}
           placeholder="Enter task title"
           $hasError={!!errors.title}
         />
@@ -245,8 +244,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Label htmlFor="description">Description</Label>
         <TextArea
           id="description"
-          name="description"
-          ref={register}
+          {...register('description')}
           placeholder="Add a description..."
           $hasError={!!errors.description}
         />
@@ -256,8 +254,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Label htmlFor="projectId">Project *</Label>
         <Select
           id="projectId"
-          name="projectId"
-          ref={register({ required: 'Project is required' })}
+          {...register('projectId', { required: 'Project is required' })}
           $hasError={!!errors.projectId}
         >
           <option value="">Select a project</option>
@@ -283,7 +280,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
       <Row>
         <FormGroup>
           <Label htmlFor="status">Status</Label>
-          <Select id="status" name="status" ref={register}>
+          <Select id="status" {...register('status')}>
             {statusOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -294,7 +291,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
         <FormGroup>
           <Label htmlFor="priority">Priority</Label>
-          <Select id="priority" name="priority" ref={register}>
+          <Select id="priority" {...register('priority')}>
             {priorityOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -309,7 +306,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Controller
           name="dueDate"
           control={control}
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <Input
               id="dueDate"
               type="date"
