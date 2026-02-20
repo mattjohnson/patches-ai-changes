@@ -5,6 +5,7 @@ module.exports = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  transformIgnorePatterns: ['/node_modules/(?!date-fns)'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/components/(.*)$': '<rootDir>/src/components/$1',
