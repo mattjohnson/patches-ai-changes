@@ -3,6 +3,7 @@ module.exports = {
   testEnvironmentOptions: {
     url: 'http://localhost:3000',
   },
+  setupFiles: ['<rootDir>/jest.polyfills.js'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   moduleNameMapper: {
@@ -13,8 +14,18 @@ module.exports = {
     '^@/types/(.*)$': '<rootDir>/src/types/$1',
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', {
+      presets: ['next/babel'],
+      plugins: [
+        '@babel/plugin-transform-class-properties',
+        '@babel/plugin-transform-private-methods',
+        '@babel/plugin-transform-private-property-in-object',
+      ],
+    }],
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(msw|until-async)/)',
+  ],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
