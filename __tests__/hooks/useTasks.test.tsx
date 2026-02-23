@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   useTasks,
@@ -30,11 +30,11 @@ describe('useTasks', () => {
   it('fetches tasks with pagination', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor } = renderHook(() => useTasks({}, 1, 10), { wrapper });
+    const { result } = renderHook(() => useTasks({}, 1, 10), { wrapper });
 
     expect(result.current.isLoading).toBe(true);
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     if (result.current.data) {
       expect(result.current.data).toHaveProperty('data');
@@ -48,12 +48,12 @@ describe('useTasks', () => {
   it('fetches tasks with status filter', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useTasks({ status: 'TODO' }, 1, 10),
       { wrapper }
     );
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.data).toBeDefined();
   });
@@ -61,12 +61,12 @@ describe('useTasks', () => {
   it('fetches tasks with priority filter', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useTasks({ priority: 'HIGH' }, 1, 10),
       { wrapper }
     );
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.data).toBeDefined();
   });
@@ -74,12 +74,12 @@ describe('useTasks', () => {
   it('keeps previous data when changing pages', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ page }) => useTasks({}, page, 10),
       { wrapper, initialProps: { page: 1 } }
     );
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     const firstPageData = result.current.data;
 
@@ -93,9 +93,9 @@ describe('useTask', () => {
   it('fetches a single task by id', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor } = renderHook(() => useTask('task-1'), { wrapper });
+    const { result } = renderHook(() => useTask('task-1'), { wrapper });
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     if (result.current.data) {
       expect(result.current.data.id).toBe('task-1');
@@ -115,12 +115,12 @@ describe('useProjectTasks', () => {
   it('fetches tasks for a specific project', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useProjectTasks('project-1'),
       { wrapper }
     );
 
-    await waitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.data).toBeDefined();
   });
@@ -147,7 +147,7 @@ describe('useCreateTask', () => {
   it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitForNextUpdate } = renderHook(() => useCreateTask(), { wrapper });
+    const { result } = renderHook(() => useCreateTask(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -158,8 +158,7 @@ describe('useCreateTask', () => {
       });
     });
 
-    await waitForNextUpdate();
-    expect(result.current.isSuccess).toBe(true);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 });
 
@@ -187,7 +186,7 @@ describe('useUpdateTaskStatus', () => {
   it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitForNextUpdate } = renderHook(() => useUpdateTaskStatus(), { wrapper });
+    const { result } = renderHook(() => useUpdateTaskStatus(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -195,8 +194,7 @@ describe('useUpdateTaskStatus', () => {
       result.current.mutate({ id: 'task-1', status: 'DONE' });
     });
 
-    await waitForNextUpdate();
-    expect(result.current.isSuccess).toBe(true);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 });
 

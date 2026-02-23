@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useProjects, useProject, useCreateProject, useDeleteProject } from '@/hooks/useProjects';
 
@@ -22,11 +22,11 @@ describe('useProjects', () => {
   it('fetches projects successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor: hookWaitFor } = renderHook(() => useProjects(), { wrapper });
+    const { result } = renderHook(() => useProjects(), { wrapper });
 
     expect(result.current.isLoading).toBe(true);
 
-    await hookWaitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data).toBeDefined();
     expect(Array.isArray(result.current.data)).toBe(true);
@@ -35,12 +35,12 @@ describe('useProjects', () => {
   it('fetches archived projects when specified', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor: hookWaitFor } = renderHook(
+    const { result } = renderHook(
       () => useProjects({ archived: true }),
       { wrapper }
     );
 
-    await hookWaitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.data).toBeDefined();
   });
@@ -48,9 +48,9 @@ describe('useProjects', () => {
   it('handles fetch errors gracefully', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor: hookWaitFor } = renderHook(() => useProjects(), { wrapper });
+    const { result } = renderHook(() => useProjects(), { wrapper });
 
-    await hookWaitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.error).toBe(null);
   });
@@ -60,12 +60,12 @@ describe('useProject', () => {
   it('fetches a single project by id', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitFor: hookWaitFor } = renderHook(
+    const { result } = renderHook(
       () => useProject('project-1'),
       { wrapper }
     );
 
-    await hookWaitFor(() => !result.current.isLoading);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     if (result.current.data) {
       expect(result.current.data.id).toBe('project-1');
@@ -95,7 +95,7 @@ describe('useCreateProject', () => {
   it('completes mutation successfully', async () => {
     const wrapper = createWrapper();
 
-    const { result, waitForNextUpdate } = renderHook(() => useCreateProject(), { wrapper });
+    const { result } = renderHook(() => useCreateProject(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
 
@@ -107,8 +107,7 @@ describe('useCreateProject', () => {
       });
     });
 
-    await waitForNextUpdate();
-    expect(result.current.isSuccess).toBe(true);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 });
 
