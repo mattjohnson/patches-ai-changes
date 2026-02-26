@@ -31,6 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Pull and tag AGP image
+        run: |
+          docker pull johnsoma/agp:latest
+          docker tag johnsoma/agp:latest ghcr.io/sonatype/agp:latest
+
       - name: Run AGP
         uses: sonatype/agp-action@main
         with:
