@@ -1,0 +1,45 @@
+name: AGP - Dependency Upgrades
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - security
+      dry-run:
+        description: 'Preview changes without applying them'
+        required: false
+        default: false
+        type: boolean
+      group:
+        description: 'Apply only a specific group by ID (optional)'
+        required: false
+        default: ''
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run AGP
+        uses: sonatype/agp-action@main
+        with:
+          mode: ${{ github.event.inputs.mode }}
+          create-pr: true
+          draft-pr: true
+          enable-agent: false
+          dry-run: ${{ github.event.inputs.dry-run }}
+          group: ${{ github.event.inputs.group }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AGP_API_TOKEN: ${{ secrets.AGP_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
