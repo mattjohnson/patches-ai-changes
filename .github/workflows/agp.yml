@@ -35,7 +35,7 @@ jobs:
         uses: sonatype/agp-action@GUIDE-1588-docker-image-override
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          AGP_API_URL: http://localhost:8090
+          AGP_API_URL: http://host.docker.internal:8090
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           mode: ${{ inputs.mode }}
