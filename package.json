@@ -48,7 +48,7 @@
     "@testing-library/user-event": "13.5.0",
     "@types/bcryptjs": "2.4.6",
     "@types/lodash": "4.14.202",
-    "@types/node": "18.19.0",
+    "@types/node": "^25.3.2",
     "@types/react": "17.0.80",
     "@types/react-dom": "17.0.25",
     "@types/styled-components": "5.1.34",
