@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run AGP
-        uses: sonatype/agp-action@GUIDE-1588-docker-image-override
+        uses: sonatype/agp-action@main
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           AGP_API_URL: http://host.docker.internal:8090
