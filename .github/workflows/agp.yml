@@ -36,5 +36,8 @@ jobs:
           draft-pr: 'true'
           enable-agent: 'false'
           verbose: ${{ inputs.verbose }}
+          docker-registry: sonatype.repo.sonatype.app/docker-all
+          docker-username: ${{ secrets.SONATYPE_DOCKER_USERNAME }}
+          docker-password: ${{ secrets.SONATYPE_DOCKER_PASSWORD }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
