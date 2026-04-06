@@ -1,48 +1,39 @@
-name: AGP - Dependency Upgrades
+name: Sonatype Guide - Agentic Patches
 
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Run mode'
+        description: 'Run mode: full or security'
         required: false
         default: 'full'
         type: choice
         options:
           - full
           - security
-      dry-run:
-        description: 'Preview changes without applying them'
+      verbose:
+        description: 'Enable verbose output (may expose sensitive data in logs)'
         required: false
         default: false
         type: boolean
-      group:
-        description: 'Apply only a specific group by ID (optional)'
-        required: false
-        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  upgrade:
-    runs-on: local-dev
-    permissions:
-      contents: write
-      pull-requests: write
-      id-token: write
+  agp:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Run AGP
-        uses: sonatype/agp-action@GUIDE-1588-skip-docker-pull
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          AGP_API_URL: http://host.docker.internal:8090
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: sonatype/agp-action@v1
         with:
           mode: ${{ inputs.mode }}
-          dry-run: ${{ inputs.dry-run }}
-          group: ${{ inputs.group }}
           create-pr: 'true'
-          draft-pr: 'true'
-          verbose: 'true'
-          docker-image: johnsoma/agp:latest
-          skip-docker-pull: 'true'
+          enable-agent: 'false'
+          verbose: ${{ inputs.verbose }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
