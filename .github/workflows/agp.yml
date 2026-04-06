@@ -33,6 +33,7 @@ jobs:
         with:
           mode: ${{ inputs.mode }}
           create-pr: 'true'
+          draft-pr: 'true'
           enable-agent: 'false'
           verbose: ${{ inputs.verbose }}
         env:
