@@ -41,4 +41,3 @@ jobs:
           docker-password: ${{ secrets.SONATYPE_DOCKER_PASSWORD }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AGP_API_URL: https://api.guide-dev.sonatype.dev
