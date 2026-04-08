@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   agp:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,4 +42,4 @@ jobs:
           docker-password: ${{ secrets.SONATYPE_DOCKER_PASSWORD }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AGP_API_URL: https://api.guide.sonatype.com
+          AGP_API_URL: https://api.mjohnson.guide-dev.sonatype.dev
