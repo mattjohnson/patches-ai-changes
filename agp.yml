@@ -5,3 +5,5 @@ validation:
     - npm run lint
 agent:
   enabled: false
+limits:
+    maxOpenPRs: 1
